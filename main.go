@@ -22,7 +22,7 @@ func main() {
 	app.Get("/ami", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(ec2.GetEC2AMI())
 	})
-	app.Get("/eks", func(ctx *fiber.Ctx) error {
+	app.Get("/eksClusterVersion", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(eks.GetEKSClusterVersion())
 	})
 	log.Fatal(app.Listen(":3000"))

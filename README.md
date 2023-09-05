@@ -326,3 +326,50 @@ Image data of DescribeImagesOutput
   ResultMetadata middleware.Metadata
 }
 ```
+
+## GetEKSClusterVersion
+It is temporary way, so If you want to find supported cluster version, find another way.
+### Request
+`GET /eksClusterVersion`
+```bash
+    curl -i -H 'Accept: application/json' http://localhost:3000/eksClusterVersion
+```
+### Response
+Cluster version list of EKS (using eksaddon info)
+```JSON
+["1.27","1.26","1.25","1.24","1.23","1.22","1.21","1.20"]
+```
+
+`DescribeAddonVersionsInput`
+```bash
+{
+  # The name of add-on. Add-on extend the functionality of k8s.(https://kubernetes.io/docs/concepts/cluster-administration/addons/)
+  AddonName *string
+
+  # The k8s version that you can use the add-on with. The example uses this value.
+  KubernetesVersion *string
+
+  # The maximum number of items to return
+  MaxResults *int32,
+  # The token returned from a previous paginated req
+  NextToken *string,
+  # Specify specified images owners, you enter AWS account IDs, self, amazon, aws-marketplace
+  Owners []string
+
+  # The publisher of add-on
+  Publishers []string
+
+  # The type of the add-on
+	Types []string
+}
+```
+`DescribeAddonVersionsOutput`
+```bash
+{
+  NextToken *string,
+  # The list of available versions with k8s version compatibility
+  Addons []types.AddonInfo
+  # Metadata about operation's result (req ID, ...etc)
+  ResultMetadata middleware.Metadata
+}
+```
