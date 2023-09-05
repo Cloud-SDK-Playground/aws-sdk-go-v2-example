@@ -1,6 +1,6 @@
 # go-sdk-v2-example
 This is go-sdk-v2 sample
-
+https://github.com/aws/aws-sdk-go-v2
 ## Usage
 You should check go version and install sdk for go v2(It is for 1.15 or later)
 ```bash
@@ -9,6 +9,7 @@ go mod init main
 go get github.com/aws/aws-sdk-go-v2
 go get github.com/aws/aws-sdk-go-v2/config
 go get github.com/aws/aws-sdk-go-v2/service/ec2
+go get github.com/aws/aws-sdk-go-v2/service/eks
 go get github.com/gofiber/fiber/v2
 ```
 Also, you should get your aws keys(access,secret). There are many ways to store keys. I stored `~/.aws/credentials` like this.
@@ -224,6 +225,103 @@ InstanceTypes data of DescribeInstanceTypesOutput
   NextToken *string,
   # The instance Type
   InstanceTypes []types.InstanceTypeInfo,
+  # Metadata about operation's result (req ID, ...etc)
+  ResultMetadata middleware.Metadata
+}
+```
+
+## GetEC2AMI
+
+### Request
+`GET /ami`
+```bash
+    curl -i -H 'Accept: application/json' http://localhost:3000/ami
+```
+### Response
+Image data of DescribeImagesOutput
+```JSON
+[
+  {
+    "Architecture":"x86_64",
+    "BlockDeviceMappings":
+    [
+      {
+        "DeviceName":"/dev/sda1",
+        "Ebs":
+        {
+          "DeleteOnTermination":true,
+          "Encrypted":false,
+          "Iops":null,
+          "KmsKeyId":null,
+          "OutpostArn":null,
+          "SnapshotId":"snapshotId",
+          "Throughput":null,
+          "VolumeSize":50,
+          "VolumeType":"gp2"
+        },
+        "NoDevice":null,
+        "VirtualName":null
+      }, 
+    ],
+    "BootMode":"",
+    "CreationDate":"ImageCreationDate",
+    "DeprecationTime":"ImageDeprecationDate",
+    "Description":"ImageDescription",
+    "EnaSupport":true,
+    "Hypervisor":"xen",
+    "ImageId":"amiID",
+    "ImageLocation":"ImageLocation",
+    "ImageOwnerAlias":"amazon",
+    "ImageType":"machine",
+    "ImdsSupport":"",
+    "KernelId":null,
+    "Name":"ImageName",
+    "OwnerId":"OwnerId",
+    "Platform":"windows",
+    "PlatformDetails":"Windows",
+    "ProductCodes":null,
+    "Public":true,
+    "RamdiskId":null,
+    "RootDeviceName":"/dev/sda1",
+    "RootDeviceType":"ebs",
+    "SriovNetSupport":"simple",
+    "State":"available",
+    "StateReason":null,
+    "Tags":null,
+    "TpmSupport":"",
+    "UsageOperation":"RunInstances:0002",
+    "VirtualizationType":"hvm"
+  }
+]
+```
+
+`DescribeImagesInput`
+```bash
+{
+  # Check whether you have the required permissions for the action
+  DryRun *bool => true or false (default false),
+  # Specify an AWS account ID, and then AMIs shared with taht specific AWS account ID are returned.
+  ExecutableUsers []string
+  # There are many FilterTypes (architecture, block-device-mapping.*, creation-date, hypervisor, image-id, product-code ...etc). If you want to see details, please check the link(https://github.com/aws/aws-sdk-go-v2/blob/main/service/ec2/api_op_DescribeImages.go)
+  Filters []types.Filter,
+  # The image IDs, default all images
+  ImageIds []string,
+  # Whether to include deprecated AMIs, default is not included.
+  IncludeDeprecated *bool
+  # The maximum number of items to return
+  MaxResults *int32,
+  # The token returned from a previous paginated req
+  NextToken *string,
+  # Specify specified images owners, you enter AWS account IDs, self, amazon, aws-marketplace
+  Owners []string
+}
+```
+`DescribeImagesOutput`
+```bash
+{
+  NextToken *string,
+  # Information about the images
+  Images []types.Image
   # Metadata about operation's result (req ID, ...etc)
   ResultMetadata middleware.Metadata
 }
