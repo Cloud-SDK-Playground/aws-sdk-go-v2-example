@@ -446,7 +446,7 @@ ResultsByTime data of GetCostAndUsageOutput
 ]
 ```
 
-`DescribeAddonVersionsInput`
+`GetCostAndUsageInput`
 ```bash
 {
   # You can set the date interval. It is required and you can choose either MONTHLY or DAILY or HOURLY.
@@ -470,7 +470,7 @@ ResultsByTime data of GetCostAndUsageOutput
 
 }
 ```
-`DescribeAddonVersionsOutput`
+`GetCostAndUsageOutput`
 ```bash
 {
   # The attributes that apply to a specific dimension value. Usually, it is empty if you don't set it.
