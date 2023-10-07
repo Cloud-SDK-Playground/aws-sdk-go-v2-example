@@ -57,13 +57,17 @@ vpcs data of DescribeVpcsOutput
 ```bash
 {
   # Check whether you have the required permissions for the action
-  DryRun *bool => true or false (default false),
+  DryRun *bool # => true or false (default false)
+
   # There are many FilterTypes (cidr, cidr-block-association.cidr-block, state, owner-id, is-default, vpc-id, ...etc)
-  Filters []types.Filter,
+  Filters []types.Filter
+
   # The maximum number of items to return
-  MaxResults *int32,
+  MaxResults *int32
+
   # The token returned from a previous paginated req
-  NextToken *string,
+  NextToken *string
+
   # One or more VPC ids (default all VPCs)
   VpcIds []string
 }
@@ -71,9 +75,11 @@ vpcs data of DescribeVpcsOutput
 `DescribeVpcsOutput`
 ```bash
 {
-  NextToken *string,
+  NextToken *string
+
   # Information about one or more vpc
-  Vpcs []types.Vpc,
+  Vpcs []types.Vpc
+
   # Metadata about operation's result (req ID, ...etc)
   ResultMetadata middleware.Metadata
 }
@@ -122,12 +128,16 @@ Subnets data of DescribeSubnetsOutput
 {
   #Check whether you have the required permissions for the action
   DryRun *bool => true or false (default false),
+
   # There are many FilterTypes (availability-zone, availability-zone-id, available-ip-address-count,cidr-block,subnet-arn,subnet-id,state, ...etc)
   Filters []types.Filter,
+
   # The maximum number of items to return
   MaxResults *int32,
+
   # The token returned from a previous paginated req
   NextToken *string,
+
   # One or more subnet ids (default all subnets)
   SubnetIds []string
 }
@@ -136,8 +146,10 @@ Subnets data of DescribeSubnetsOutput
 ```bash
 {
   NextToken *string,
+
   # Information about one or more subnets
   Subnets []types.Subnet,
+
   # Metadata about operation's result (req ID, ...etc)
   ResultMetadata middleware.Metadata
 }
@@ -261,7 +273,7 @@ Image data of DescribeImagesOutput
         },
         "NoDevice":null,
         "VirtualName":null
-      }, 
+      },
     ],
     "BootMode":"",
     "CreationDate":"ImageCreationDate",
@@ -299,19 +311,26 @@ Image data of DescribeImagesOutput
 ```bash
 {
   # Check whether you have the required permissions for the action
-  DryRun *bool => true or false (default false),
+  DryRun *bool # => true or false (default false)
+
   # Specify an AWS account ID, and then AMIs shared with taht specific AWS account ID are returned.
   ExecutableUsers []string
+
   # There are many FilterTypes (architecture, block-device-mapping.*, creation-date, hypervisor, image-id, product-code ...etc). If you want to see details, please check the link(https://github.com/aws/aws-sdk-go-v2/blob/main/service/ec2/api_op_DescribeImages.go)
-  Filters []types.Filter,
+  Filters []types.Filter
+
   # The image IDs, default all images
-  ImageIds []string,
+  ImageIds []string
+
   # Whether to include deprecated AMIs, default is not included.
   IncludeDeprecated *bool
+
   # The maximum number of items to return
-  MaxResults *int32,
+  MaxResults *int32
+
   # The token returned from a previous paginated req
-  NextToken *string,
+  NextToken *string
+
   # Specify specified images owners, you enter AWS account IDs, self, amazon, aws-marketplace
   Owners []string
 }
@@ -320,8 +339,10 @@ Image data of DescribeImagesOutput
 ```bash
 {
   NextToken *string,
+
   # Information about the images
   Images []types.Image
+
   # Metadata about operation's result (req ID, ...etc)
   ResultMetadata middleware.Metadata
 }
@@ -351,8 +372,10 @@ Cluster version list of EKS (using eksaddon info)
 
   # The maximum number of items to return
   MaxResults *int32,
+
   # The token returned from a previous paginated req
   NextToken *string,
+
   # Specify specified images owners, you enter AWS account IDs, self, amazon, aws-marketplace
   Owners []string
 
@@ -367,9 +390,102 @@ Cluster version list of EKS (using eksaddon info)
 ```bash
 {
   NextToken *string,
+
   # The list of available versions with k8s version compatibility
   Addons []types.AddonInfo
+
   # Metadata about operation's result (req ID, ...etc)
   ResultMetadata middleware.Metadata
+}
+```
+
+## GetCostUsage
+
+### Request
+`GET /costUsage`
+```bash
+    curl -i -H 'Accept: application/json' http://localhost:3000/costUsage
+```
+### Response
+The time period that's covered by the results (Used Resource)
+ResultsByTime data of GetCostAndUsageOutput
+```JSON
+[
+  {
+    "Estimated": false,
+    "Groups": [
+      {
+        "Keys": [
+          "AWS Data Transfer"
+        ],
+        "Metrics": {
+          "BlendedCost": {
+            "Amount": "-0.000000074",
+            "Unit": "USD"
+          }
+        }
+      },
+      {
+        "Keys": [
+          "AWS Key Management Service"
+        ],
+        "Metrics": {
+          "BlendedCost": {
+            "Amount": "0",
+            "Unit": "USD"
+          }
+        }
+      }, ...
+    ],
+    "TimePeriod": {
+      "End": "2023-10-01",
+      "Start": "2023-09-30"
+    },
+    "Total": {}
+  }
+]
+```
+
+`DescribeAddonVersionsInput`
+```bash
+{
+  # You can set the date interval. It is required and you can choose either MONTHLY or DAILY or HOURLY.
+  Granularity types.Granularity
+
+  # It is about cost type like AmortizedCost, BlendedCost, NetAmortizedCost, NetUnblendedCost, NormalizedUsageAmount, UnblendedCost, and UsageQuantity.
+  # It is required and if you want to see costs of all accounts, then choose BlendedCost.
+  Metrics []string
+
+  # You can set the time interval from start to end. It it required.
+  TimePeriod *types.DateInterval
+
+  # You can filter costs by different dimensions. (FYI; https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html)
+  Filter *types.Expression
+
+  # You can group costs by different dimensions, or tag keys or cost categories.
+  GroupBy []types.GroupDefinition
+
+  # It is for paging to retrieve next results.
+ NextPageToken *string
+
+}
+```
+`DescribeAddonVersionsOutput`
+```bash
+{
+  # The attributes that apply to a specific dimension value. Usually, it is empty if you don't set it.
+  DimensionValueAttributes []types.DimensionValuesWithAttributes
+
+	# It is about your group filter.
+	GroupDefinitions []types.GroupDefinition
+
+	# It is the token for the next set of retrievable results.
+	NextPageToken *string
+
+	# The time period that's covered by the results in the response. You can make your cost chart using this.
+	ResultsByTime []types.ResultByTime
+
+	# Metadata pertaining to the operation's result.
+	ResultMetadata middleware.Metadata
 }
 ```
