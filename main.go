@@ -1,10 +1,13 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"log"
+
+	"github.com/gofiber/fiber/v2"
+
 	"main/ec2"
 	"main/eks"
+	"main/pricing"
 	"main/vpc"
 )
 
@@ -24,6 +27,9 @@ func main() {
 	})
 	app.Get("/eksClusterVersion", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(eks.GetEKSClusterVersion())
+	})
+	app.Get("/costUsage", func(ctx *fiber.Ctx) error {
+		return ctx.JSON(pricing.GetCostUsage())
 	})
 	log.Fatal(app.Listen(":3000"))
 }
